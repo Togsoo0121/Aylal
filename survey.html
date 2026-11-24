@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Түүх–Газар зүйн Аялал · Сурагчийн санал асуулга</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --background: #faf9f5;
+  --surface: #ffffff;
+  --surface-alt: #f1efe8;
+  --ink: #17181a;
+  --ink-muted: #56585c;
+  --border: #dedad0;
+  --primary: #17181a;
+  --accent: #f2b705;
+  --secondary: #1f4e5f;
+  --secondary-tint: #e8f0f2;
+  --positive: #2b6e52;
+  --positive-bg: #ebf5f0;
+  --warm-bg: #f5e6c4;
+  --font-head: 'Noto Serif', serif;
+  --font-body: 'Noto Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: grid;
+  gap: 1.5rem;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+.pill {
+  background: var(--accent);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+}
+.pill--sec { background: var(--secondary); color: #fff; }
+.mono { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-muted); }
+h1 { font-family: var(--font-head); font-size: clamp(1.6rem, 3vw, 2.3rem); margin: 0 0 0.5rem 0; line-height: 1.2; }
+h2 { font-family: var(--font-head); font-size: 1.35rem; margin: 0 0 0.5rem 0; }
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; }
+input[type="text"], select, textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #c8c4b8;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--surface);
+}
+textarea { min-height: 85px; resize: vertical; }
+
+.journey-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.map-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+}
+.stop-node { cursor: pointer; transition: transform 0.15s ease; }
+.stop-node:hover { opacity: 0.88; }
+.stop-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  background: var(--secondary-tint);
+  color: var(--secondary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 3px;
+  margin-bottom: 0.4rem;
+}
+.likert-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  margin: 0.8rem 0;
+}
+.likert-btn {
+  padding: 0.6rem 0.25rem;
+  border: 1px solid #c8c4b8;
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.12s ease;
+}
+.likert-btn:hover { background: var(--surface-alt); }
+.likert-btn.is-active {
+  background: var(--secondary);
+  color: #fff;
+  border-color: var(--secondary);
+}
+.likert-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.btn {
+  padding: 0.65rem 1.1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--ink);
+  font-size: 0.92rem;
+}
+.btn--primary { background: var(--primary); color: #fff; }
+.btn--accent { background: var(--accent); color: var(--ink); }
+.btn--ghost { background: var(--surface); color: var(--ink); border-color: #c8c4b8; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.passport-card {
+  display: none;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+.passport-card.is-visible { display: block; }
+.passport-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+.metric-row { margin-bottom: 0.65rem; }
+.metric-head { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; }
+.metric-bar {
+  height: 10px;
+  background: var(--surface-alt);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.2rem;
+}
+.metric-fill { height: 100%; background: var(--positive); transition: width 0.4s ease; }
+.status-msg {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.status-ok { background: var(--positive-bg); color: var(--positive); border-left: 4px solid var(--positive); }
+.status-warn { background: var(--warm-bg); color: #785008; border-left: 4px solid #785008; }
+
+@media (max-width: 780px) {
+  .journey-layout, .passport-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<main class="container">
+  <header class="card">
+    <div class="bar">
+      <div>
+        <span class="pill">СУДАЛГААНЫ САНАЛ АСУУЛГА</span>
+        <span class="pill pill--sec">ТҮҮХ 70% · ГАЗАР ЗҮЙ 30%</span>
+      </div>
+      <span class="mono" id="progress-label">Аяллын явц: 0 / 6 өртөө</span>
+    </div>
+    <h1>Түүх–Газар зүйн Аялал: Ажлын хуудасны үнэлгээ</h1>
+    <p style="margin:0 0 1rem 0; color:var(--ink-muted);">Монгол орны засаг захиргааны түүхэн өртөө бүрээр аялж, ажлын хуудасны талаарх өөрийн үнэлгээг өгнө үү. Аяллын төгсгөлд таны <strong>«Хэмжүүртэй аяллын карт»</strong> үүснэ.</p>
+
+    <div class="grid-3">
+      <div>
+        <label for="st-name">Сурагчийн нэр (эсвэл код)</label>
+        <input type="text" id="st-name" placeholder="Жишээ: Б.Анужин">
+      </div>
+      <div>
+        <label for="st-class">Анги, бүлэг</label>
+        <input type="text" id="st-class" placeholder="Жишээ: 8А">
+      </div>
+      <div>
+        <label for="st-group">Судалгааны бүлэг</label>
+        <select id="st-group">
+          <option value="Туршилтын бүлэг (Ажлын хуудас + ХОУ)">Туршилтын бүлэг (Интерактив ажлын хуудас)</option>
+          <option value="Хяналтын бүлэг">Хяналтын бүлэг</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <section class="card" id="journey-section">
+    <div class="bar">
+      <span class="mono">ГАЗРЫН ЗУРАГ ДЭЭРХ 6 ӨРТӨӨТ АЯЛАЛ</span>
+      <span class="mono">ӨРТӨӨ БҮР ДЭЭР 1–5 ОНООГООР ҮНЭЛНЭ ҮҮ</span>
+    </div>
+
+    <div class="journey-layout">
+      <div class="map-box">
+        <svg viewBox="0 0 640 340" style="width:100%; height:auto; display:block;" role="img" aria-label="Монгол орны 6 өртөөт аяллын газрын зураг">
+          <path d="M 45,105 L 115,55 L 220,75 L 285,35 L 365,75 L 495,95 L 605,135 L 555,215 L 455,255 L 365,305 L 255,275 L 165,225 L 75,185 Z"
+                fill="#ffffff" stroke="#17181a" stroke-width="1.8"/>
+
+          <polyline id="route-line" points="95,135 195,115 285,175 375,135 425,235 535,165"
+                    fill="none" stroke="#1f4e5f" stroke-width="2.5" stroke-dasharray="6 4"/>
+
+          <g class="stop-node" onclick="goToStop(0)">
+            <circle id="dot-0" cx="95" cy="135" r="14" fill="#f2b705" stroke="#17181a" stroke-width="2"/>
+            <text x="95" y="140" text-anchor="middle" font-size="12" font-weight="700">1</text>
+            <text x="95" y="165" text-anchor="middle" font-size="11" font-weight="600">Ховд (Алтайн хязгаар)</text>
+          </g>
+
+          <g class="stop-node" onclick="goToStop(1)">
+            <circle id="dot-1" cx="195" cy="115" r="14" fill="#ffffff" stroke="#17181a" stroke-width="2"/>
+            <text x="195" y="120" text-anchor="middle" font-size="12" font-weight="700">2</text>
+            <text x="195" y="93" text-anchor="middle" font-size="11" font-weight="600">Засагт хан</text>
+          </g>
+
+          <g class="stop-node" onclick="goToStop(2)">
+            <circle id="dot-2" cx="285" cy="175" r="14" fill="#ffffff" stroke="#17181a" stroke-width="2"/>
+            <text x="285" y="180" text-anchor="middle" font-size="12" font-weight="700">3</text>
+            <text x="285" y="205" text-anchor="middle" font-size="11" font-weight="600">Хархорум / Сайн ноён</text>
+          </g>
+
+          <g class="stop-node" onclick="goToStop(3)">
+            <circle id="dot-3" cx="375" cy="135" r="14" fill="#ffffff" stroke="#17181a" stroke-width="2"/>
+            <text x="375" y="140" text-anchor="middle" font-size="12" font-weight="700">4</text>
+            <text x="375" y="113" text-anchor="middle" font-size="11" font-weight="600">Богд хан уул (Төв)</text>
+          </g>
+
+          <g class="stop-node" onclick="goToStop(4)">
+            <circle id="dot-4" cx="425" cy="235" r="14" fill="#ffffff" stroke="#17181a" stroke-width="2"/>
+            <text x="425" y="240" text-anchor="middle" font-size="12" font-weight="700">5</text>
+            <text x="425" y="263" text-anchor="middle" font-size="11" font-weight="600">Өмнөговь (Их Говь)</text>
+          </g>
+
+          <g class="stop-node" onclick="goToStop(5)">
+            <circle id="dot-5" cx="535" cy="165" r="14" fill="#ffffff" stroke="#17181a" stroke-width="2"/>
+            <text x="535" y="170" text-anchor="middle" font-size="12" font-weight="700">6</text>
+            <text x="535" y="193" text-anchor="middle" font-size="11" font-weight="600">Хан Хэнтий (Зүүн бүс)</text>
+          </g>
+        </svg>
+        <p class="mono" style="margin:0.5rem 0 0 0;">Зураг дээрх дугаартай өртөө бүр дээр дарж дараагийн аймаг руу шилжинэ үү.</p>
+      </div>
+
+      <div style="background:var(--surface-alt); padding:1.25rem; border-radius:6px; border:1px solid var(--border);">
+        <span class="stop-badge" id="stop-tag">ӨРТӨӨ 1 / 6 · ХОВДЫН ХЯЗГААР</span>
+        <h2 id="stop-title">Ойлгомжтой байдал ба Эх сурвалж</h2>
+        <p id="stop-context" style="font-size:0.88rem; color:var(--ink-muted); margin:0 0 0.75rem 0;">
+          <strong>Түүх-Газар зүйн баримт:</strong> Монгол Алтайн өндөр уулс, баруун захын цэг Мааньт уулнаас аялал эхэлж байна.
+        </p>
+        <p id="stop-question" style="font-weight:600; margin:0 0 0.5rem 0;">
+          Ажлын хуудасны онолын лавламж болон заавар нь бие даан уншиж ойлгоход хэр хялбар байсан бэ?
+        </p>
+
+        <div class="likert-row" id="likert-buttons">
+          <button type="button" class="likert-btn" onclick="rateStop(1)">1</button>
+          <button type="button" class="likert-btn" onclick="rateStop(2)">2</button>
+          <button type="button" class="likert-btn" onclick="rateStop(3)">3</button>
+          <button type="button" class="likert-btn" onclick="rateStop(4)">4</button>
+          <button type="button" class="likert-btn" onclick="rateStop(5)">5</button>
+        </div>
+        <div class="likert-labels">
+          <span>1 = Огт үгүй</span>
+          <span>3 = Дунд зэрэг</span>
+          <span>5 = Маш их</span>
+        </div>
+
+        <div id="final-comment-box" style="display:none; margin-top:1rem;">
+          <label for="st-comment">Барианы тэмдэглэл (Нээлттэй санал):</label>
+          <textarea id="st-comment" placeholder="Ажлын хуудасны аль хэсэг хамгийн их таалагдсан бэ? Юуг сайжруулбал зүгээр вэ?"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn--ghost" id="prev-btn" onclick="prevStop()" disabled>← Өмнөх өртөө</button>
+          <button type="button" class="btn btn--primary" id="next-btn" onclick="nextStop()">Дараагийн аймаг руу →</button>
+          <button type="button" class="btn btn--accent" id="finish-btn" style="display:none;" onclick="finishJourney()">Аялал дуусгах &amp; Илгээх</button>
+        </div>
+        <div id="form-alert" class="status-msg status-warn" style="display:none;"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="passport-card" id="passport-card" aria-live="polite">
+    <div class="bar">
+      <div>
+        <span class="pill">АЯЛЛЫН ГЭРЧИЛГЭЭ</span>
+        <span class="pill pill--sec" id="card-badge">СУДЛААЧ АЯЛАГЧ</span>
+      </div>
+      <span class="mono" id="card-date">2026</span>
+    </div>
+
+    <h2>Таны аялал: Хэмжүүртэй зураг</h2>
+    <p id="card-student-info" style="margin:0 0 1rem 0; font-weight:600; color:var(--secondary);"></p>
+
+    <div class="passport-grid">
+      <div class="map-box" style="text-align:center;">
+        <svg id="summary-svg" viewBox="0 0 420 230" style="width:100%; height:auto; display:block;">
+          <rect x="8" y="8" width="404" height="214" rx="6" fill="#faf9f5" stroke="#17181a" stroke-width="1.5"/>
+          <text x="210" y="34" text-anchor="middle" font-family="Noto Serif, serif" font-size="14" font-weight="700" fill="#17181a">МОНГОЛ ОРНЫ ТҮҮХ–ГАЗАР ЗҮЙН МАРШРУТ</text>
+          <polyline points="45,115 110,95 175,135 240,105 305,155 375,115" fill="none" stroke="#2b6e52" stroke-width="3"/>
+          <circle cx="45" cy="115" r="7" fill="#f2b705" stroke="#17181a" stroke-width="1.5"/>
+          <circle cx="110" cy="95" r="7" fill="#f2b705" stroke="#17181a" stroke-width="1.5"/>
+          <circle cx="175" cy="135" r="7" fill="#f2b705" stroke="#17181a" stroke-width="1.5"/>
+          <circle cx="240" cy="105" r="7" fill="#f2b705" stroke="#17181a" stroke-width="1.5"/>
+          <circle cx="305" cy="155" r="7" fill="#f2b705" stroke="#17181a" stroke-width="1.5"/>
+          <circle cx="375" cy="115" r="7" fill="#f2b705" stroke="#17181a" stroke-width="1.5"/>
+          <text id="svg-score-text" x="210" y="198" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600" fill="#1f4e5f">ДУНДАЖ ҮНЭЛГЭЭ: 0.0 / 5.0</text>
+        </svg>
+      </div>
+
+      <div id="metrics-container"></div>
+    </div>
+
+    <div id="sheet-sync-status" class="status-msg status-ok" style="margin-top:1rem;"></div>
+  </section>
+</main>
+
+<script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxl6yQz0EJkNUpsUeDyr9GM_lpAY1BSzYn8e8DEdSPQshMKEcCud3yZWi9xpuuQ7BUs/exec";
+
+const STOPS = [
+  {
+    tag: "ӨРТӨӨ 1 / 6 · ХОВДЫН ХЯЗГААР (БАРУУН БҮС)",
+    title: "1. Ойлгомжтой байдал ба Бие даан унших",
+    context: "Түүх–Газар зүй: Монгол Алтайн өндөр уулс, баруун захын цэг Мааньт уулнаас аялал эхэллээ.",
+    question: "Ажлын хуудасны заавар, онолын лавламж нь бие даан уншиж ойлгоход хэр ойлгомжтой байсан бэ?",
+    dim: "Ойлгомжтой байдал"
+  },
+  {
+    tag: "ӨРТӨӨ 2 / 6 · ЗАСАГТ ХАН / ХАНТАЙШИР УУЛ",
+    title: "2. Түүх ба Газар зүйн интеграцчилал",
+    context: "Түүх–Газар зүй: 1923 онд ноёдын цолыг уул, усны нэрээр сольж, байгалийн бүстэй уялдуулсан.",
+    question: "Газрын зураг дээр түүхэн үе шатыг байгалийн бүс, 4 захын цэгтэй холбож харах нь сэдвийг ойлгоход хэр тусалсан бэ?",
+    dim: "Түүх–Газар зүйн холбоос"
+  },
+  {
+    tag: "ӨРТӨӨ 3 / 6 · ХАРХОРУМ / САЙН НОЁН ХАН",
+    title: "3. Бие даан суралцах ба Өөрийгөө хянах",
+    context: "Түүх–Газар зүй: Их Монгол Улсын нийслэл Хархорум ба Орхоны хөндийн түүхэн төвлөрөл.",
+    question: "Шуурхай шалгалтын хариу болон явцын хувь харагдах нь алдаагаа засаж, бие даан судлахад хэр тусалсан бэ?",
+    dim: "Бие даан суралцах дэмжлэг"
+  },
+  {
+    tag: "ӨРТӨӨ 4 / 6 · БОГД ХАН УУЛ (ТӨВИЙН БҮС)",
+    title: "4. Задлан шинжлэх ба Харьцуулалт",
+    context: "Түүх–Газар зүй: 1931 оны 13 аймгийн шинэчлэл болон өнөөгийн 21 аймаг, 330 сумын тогтолцоо.",
+    question: "Харьцуулсан хүснэгт болон интерактив даалгаврууд нь мэдээллийг системтэй шинжлэхэд хэр үр дүнтэй байсан бэ?",
+    dim: "Шинжлэх ба Харьцуулах"
+  },
+  {
+    tag: "ӨРТӨӨ 5 / 6 · ӨМНӨГОВЬ (ИХ ГОВИЙН БҮС)",
+    title: "5. Бүтээлч сэтгэлгээ ба Төсөл",
+    context: "Түүх–Газар зүй: Өргөн уудам нутаг, уур амьсгалын +2.24°C дулаарал ба 2040 оны бүсчилсэн хөгжил.",
+    question: "Оюуны зураглалд шинэ зангилаа нэмэх, «Бүсчилсэн хөгжил 2040» төсөл бичих нь өөрийн санааг гаргахад хэр дэмжлэг болсон бэ?",
+    dim: "Бүтээлч сэтгэлгээ"
+  },
+  {
+    tag: "ӨРТӨӨ 6 / 6 · ХАН ХЭНТИЙ УУЛ (ЗҮҮН БҮС)",
+    title: "6. Өөрийн үнэлгээ ба Ерөнхий сэтгэл ханамж",
+    context: "Барианы өртөө: Зүүн захын цэг Модтой хамар, Хэрлэн–Ононгийн сав газарт аялал өндөрлөж байна.",
+    question: "16 онооны өөрийн үнэлгээний хуудас ашиглах болон энэ хэлбэрээр хичээллэх нь танд хэр их таалагдсан бэ?",
+    dim: "Өөрийн үнэлгээ ба Сэтгэл ханамж"
+  }
+];
+
+let currentStop = 0;
+let ratings = [0, 0, 0, 0, 0, 0];
+
+function renderStop() {
+  const s = STOPS[currentStop];
+  document.getElementById('stop-tag').textContent = s.tag;
+  document.getElementById('stop-title').textContent = s.title;
+  document.getElementById('stop-context').innerHTML = `<strong>${s.context.split(':')[0]}:</strong>${s.context.split(':').slice(1).join(':')}`;
+  document.getElementById('stop-question').textContent = s.question;
+
+  const btns = document.querySelectorAll('.likert-btn');
+  btns.forEach((b, idx) => {
+    b.classList.toggle('is-active', ratings[currentStop] === idx + 1);
+  });
+
+  for (let i = 0; i < STOPS.length; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (i === currentStop) {
+      dot.setAttribute('fill', '#f2b705');
+    } else if (ratings[i] > 0) {
+      dot.setAttribute('fill', '#2b6e52');
+    } else {
+      dot.setAttribute('fill', '#ffffff');
+    }
+  }
+
+  document.getElementById('prev-btn').disabled = currentStop === 0;
+  const isLast = currentStop === STOPS.length - 1;
+  document.getElementById('next-btn').style.display = isLast ? 'none' : 'inline-block';
+  document.getElementById('finish-btn').style.display = isLast ? 'inline-block' : 'none';
+  document.getElementById('final-comment-box').style.display = isLast ? 'block' : 'none';
+
+  const answeredCount = ratings.filter(r => r > 0).length;
+  document.getElementById('progress-label').textContent = `Аяллын явц: ${answeredCount} / 6 өртөө`;
+  document.getElementById('form-alert').style.display = 'none';
+}
+
+function rateStop(val) {
+  ratings[currentStop] = val;
+  renderStop();
+}
+
+function goToStop(idx) {
+  currentStop = idx;
+  renderStop();
+}
+
+function prevStop() {
+  if (currentStop > 0) {
+    currentStop--;
+    renderStop();
+  }
+}
+
+function nextStop() {
+  if (ratings[currentStop] === 0) {
+    const alertBox = document.getElementById('form-alert');
+    alertBox.textContent = "Дараагийн аймаг руу шилжихийн өмнө энэ өртөөний үнэлгээг (1–5) сонгоно уу.";
+    alertBox.style.display = 'block';
+    return;
+  }
+  if (currentStop < STOPS.length - 1) {
+    currentStop++;
+    renderStop();
+  }
+}
+
+async function finishJourney() {
+  const alertBox = document.getElementById('form-alert');
+  if (ratings.includes(0)) {
+    alertBox.textContent = "Бүх 6 өртөөний асуултад хариулсны дараа аяллаа дуусгана уу.";
+    alertBox.style.display = 'block';
+    return;
+  }
+
+  const name = document.getElementById('st-name').value.trim() || "Нэргүй сурагч";
+  const className = document.getElementById('st-class').value.trim() || "8-р анги";
+  const groupType = document.getElementById('st-group').value;
+  const comment = document.getElementById('st-comment').value.trim();
+
+  const sum = ratings.reduce((a, b) => a + b, 0);
+  const avg = (sum / ratings.length).toFixed(2);
+
+  document.getElementById('card-student-info').textContent = `Аялагч: ${name} · Анги: ${className} · ${groupType}`;
+  document.getElementById('card-date').textContent = new Date().toLocaleDateString('mn-MN');
+  document.getElementById('svg-score-text').textContent = `ДУНДАЖ ҮНЭЛГЭЭ: ${avg} / 5.0`;
+
+  let metricsHtml = "";
+  STOPS.forEach((s, i) => {
+    const pct = (ratings[i] / 5) * 100;
+    metricsHtml += `
+      <div class="metric-row">
+        <div class="metric-head"><span>${s.dim}</span><span>${ratings[i]} / 5</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+  });
+  document.getElementById('metrics-container').innerHTML = metricsHtml;
+  document.getElementById('passport-card').classList.add('is-visible');
+  document.getElementById('passport-card').scrollIntoView({ behavior: 'smooth' });
+
+  const syncBox = document.getElementById('sheet-sync-status');
+  syncBox.className = "status-msg status-ok";
+  syncBox.textContent = "Таны хариултыг судалгааны санд илгээж байна...";
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+        className: className,
+        groupType: groupType,
+        q1: ratings[0],
+        q2: ratings[1],
+        q3: ratings[2],
+        q4: ratings[3],
+        q5: ratings[4],
+        q6: ratings[5],
+        avgScore: avg,
+        comment: comment
+      })
+    });
+    syncBox.className = "status-msg status-ok";
+    syncBox.textContent = "Амжилттай! Таны аяллын үнэлгээ багшийн Google Sheets судалгааны санд бүртгэгдлээ.";
+  } catch (e) {
+    syncBox.className = "status-msg status-warn";
+    syncBox.textContent = "Сүлжээний алдаа гарлаа. Картынхаа зургийг авч (Screenshot) багшдаа үзүүлнэ үү.";
+  }
+}
+
+renderStop();
+</script>
+</body>
+</html>
